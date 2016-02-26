@@ -73,7 +73,7 @@ pages.forEach(function(pathname) {
 	var conf = {
 		filename: '../views/' + pathname + '.html', //生成的html存放路径，相对于path
 		template: 'src/views/' + pathname + '.html', //html模板路径
-		inject: false,
+		inject: false,	//js插入的位置，true/'head'/'body'/false
 		minify: { //压缩HTML文件
 			removeComments: true, //移除HTML中的注释
 			collapseWhitespace: false //删除空白符与换行符

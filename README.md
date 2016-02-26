@@ -1,2 +1,2 @@
-# webpack-MultiplePage
-基于webpack构建多页面站点的探索
+## 基于webpack的前端工程化开发之多页站点篇（二）
+
