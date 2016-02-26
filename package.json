@@ -1,9 +1,11 @@
 {
-  "name": "entire",
-  "version": "0.0.0",
-  "private": true,
+  "name": "webpack-f2e",
+  "version": "0.1.0",
+  "description": "f2e demo",
+  "author": "vhtml",
+  "license": "ISC",
   "scripts": {
-    "test": "PORT=54999 supervisor ./bin/www"
+    "dev": "PORT=54999 node ./bin/www"
   },
   "dependencies": {
     "art-template": "^3.0.3",
@@ -17,7 +19,6 @@
   },
   "devDependencies": {
     "css-loader": "^0.23.1",
-    "ejs4html-loader": "^0.2.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.8.5",
     "glob": "^7.0.0",
