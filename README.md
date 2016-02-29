@@ -194,4 +194,4 @@ function getEntry(globPath, pathDir) {
 
 到此，“大业”完成。
 
-假如你有更好的解决方式，欢迎一起分享。
+假如你有更好的解决方案，欢迎一起分享。
