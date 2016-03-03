@@ -32,7 +32,7 @@
     webpack.config.js		#webpack配置
     README.md				#项目说明
 ```
-> 你同样可以根据个人喜好自由设计目录结构。完整的源码示例前往<https://github.com/vhtml/webpack-MultiPage>。
+> 你同样可以根据个人喜好自由设计目录结构。完整的源码示例前往<https://github.com/vhtml/webpack-MultiplePage>。
 
 package.json里最终的声明依赖如下：
 
