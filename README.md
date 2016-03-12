@@ -195,3 +195,15 @@ function getEntry(globPath, pathDir) {
 到此，“大业”完成。
 
 假如你有更好的解决方案，欢迎一起分享。
+
+### 快速开始
+
+```bash
+git clone https://github.com/vhtml/webpack-MultiplePage.git  #克隆最新项目到本地
+cd webpack-MultiplePage  #切换到项目路径下
+npm install   #安装依赖
+webpack		  #打包编译
+npm run dev   #运行程序
+```
+
+在浏览器中打开http://localhost:54999/。
