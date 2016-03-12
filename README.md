@@ -22,11 +22,11 @@
             + page
             + components
         + views				#HTML模板
-    - public				#webpack编译打包输出目录的静态文件，express工程的静态目录
+    - public				#webpack编译打包输出目录的静态文件，express工程的静态目录，可由webpack打包自动生成
         + styles                
         + scripts
         + imgs
-    + views					#webpack编译输出的模板静态文件，express工程的视图模板 
+    + views					#webpack编译输出的模板静态文件，express工程的视图模板，可由webpack打包自动生成
     + node_modules			#所使用的nodejs模块
     package.json			#项目配置
     webpack.config.js		#webpack配置
