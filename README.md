@@ -168,7 +168,8 @@ function getEntry(globPath, pathDir) {
 
 建立一个开发环境服务器启动脚本server.js:
 
-```
+```javascript
+var fs = require('fs');
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
 var config = require('./webpack.config');
@@ -196,10 +197,29 @@ var app = new WebpackDevServer(webpack(config), {
 	hot: true,
 	proxy: proxy
 });
-app.listen(devPort);
+app.listen(devPort, function() {
+	console.log('dev server on http://0.0.0.0:' + devPort+'\n');
+});
 ```
 
-然后，只需要在项目目录下执行`node server`就可以进行开发了。
+然后，只需要在项目目录下执行`node server`就可以开始进行开发了。
+
+有些同学会发现一个问题，热加载经常无法生效，这个是由于热加载只能针对有`module.exports`输出的模块才行，否则会导致热加载失败从而刷新浏览器，而对于入口js文件由于没有模块输出，就会发现总是刷新浏览器了。如果要禁止自动刷新浏览器，可以将server.js中的`"webpack/hot/dev-server"`改为`"webpack/hot/only-dev-server"`。
+
+还有一个蛋疼的问题就是，webpack-dev-server监控文件变化生成的内容是放在内存里的，由于没有输出到打包目录下，则`/views`目录下的文件没有变化，supervisor之类的工具检测不到变化，从而不会刷新视图。只好在改动模板文件后，执行`webpack`命令打包一下。于是比较蛋疼的在server.js的最后加上了这段代码：
+
+```javascript
+fs.watch('./src/views/', function() {
+	exec('webpack --progress --hide-modules', function(err, stdout, stderr) {
+		if (err) {
+			console.log(stderr);
+		} else {
+			console.log(stdout);
+		}
+	});
+});
+```
+在检测到有模板改动的时候会自动重新打包，然后只需手动刷新下浏览器即可。__显然这样做是比较低效的__。
 
 这里还要说说如何直接处理后端模板的问题。一开始本菜也是对这个问题进行了苦苦的探索，觉得可能真的实现不了，一度要放弃，并打算采用先纯静态打包再改写成后端模板的方式（因为貌似还没有这样的loader可以很智能的处理模板include的问题以及在非html模板中自动引入css和js）。但是这样做真的很蛋疼啊有木有！明明是一件事为什么要拆成两件事去做呢？！
 
@@ -237,8 +257,9 @@ app.listen(devPort);
 git clone https://github.com/vhtml/webpack-MultiplePage.git  #克隆最新项目到本地
 cd webpack-MultiplePage  #切换到项目路径下
 npm install   #安装依赖
-webpack		  #打包编译
-npm run dev   #运行程序
+node server 	#执行开发环境脚本
 ```
 
-在浏览器中打开http://localhost:54999/。
+在浏览器中打开http://localhost:8082/。
+
+如果需要上线，执行`npm run build`完成最终项目打包即可。

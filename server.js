@@ -1,3 +1,4 @@
+var fs = require('fs');
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
 var config = require('./webpack.config');
@@ -25,4 +26,16 @@ var app = new WebpackDevServer(webpack(config), {
 	hot: true,
 	proxy: proxy
 });
-app.listen(devPort);
+app.listen(devPort, function() {
+	console.log('dev server on http://0.0.0.0:' + devPort+'\n');
+});
+
+fs.watch('./src/views/', function() {
+	exec('webpack --progress --hide-modules', function(err, stdout, stderr) {
+		if (err) {
+			console.log(stderr);
+		} else {
+			console.log(stdout);
+		}
+	});
+});
