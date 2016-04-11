@@ -17,7 +17,7 @@ var config = {
 		path: path.join(__dirname, 'public'),
 		publicPath: '/static/',
 		filename: 'scripts/[name].js',
-		chunkFilename: 'scripts/[id].chunk.js'
+		chunkFilename: 'scripts/[id].chunk.js?[chunkhash]'
 	},
 	module: {
 		loaders: [ //加载器
@@ -55,16 +55,7 @@ var config = {
 			},
 			except: ['$super', '$', 'exports', 'require'] //排除关键字
 		}),
-		new webpack.HotModuleReplacementPlugin() //热加载
-	],
-	devServer: {
-		publicPath:'http://localhost:8080/static/',
-		proxy: {
-			"*": "http://localhost:54999"
-		},
-		inline: true,
-		hot: true
-	}
+	]
 };
 
 
@@ -102,7 +93,7 @@ function getEntry(globPath, pathDir) {
 		basename = path.basename(entry, extname);
 		pathname = path.join(dirname, basename);
 		pathname = pathDir ? pathname.replace(new RegExp('^' + pathDir), '') : pathname;
-		entries[pathname] = './' + entry;
+		entries[pathname] = ['./' + entry];
 	}
 	return entries;
 }

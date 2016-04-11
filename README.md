@@ -113,16 +113,16 @@ var config = {
 			},
 			except: ['$super', '$', 'exports', 'require'] //排除关键字
 		}),
-		new webpack.HotModuleReplacementPlugin() //热加载
+		//new webpack.HotModuleReplacementPlugin() //热加载
 	],
-	devServer: {
-		publicPath:'http://localhost:8080/static/',
-		proxy: {
-			"*": "http://localhost:54999"
-		},
-		inline: true,
-		hot: true
-	}
+	//devServer: {
+	//	publicPath:'http://localhost:8080/static/',
+	//	proxy: {
+	//		"*": "http://localhost:54999"
+	//	},
+	//	inline: true,
+	//	hot: true
+	//}
 };
 
 
@@ -160,11 +160,46 @@ function getEntry(globPath, pathDir) {
 		basename = path.basename(entry, extname);
 		pathname = path.join(dirname, basename);
 		pathname = pathDir ? pathname.replace(new RegExp('^' + pathDir), '') : pathname;
-		entries[pathname] = './' + entry;
+		entries[pathname] = ['./' + entry];
 	}
 	return entries;
 }
 ```
+
+建立一个开发环境服务器启动脚本server.js:
+
+```
+var webpack = require('webpack');
+var WebpackDevServer = require('webpack-dev-server');
+var config = require('./webpack.config');
+
+var serverPort = 54999,
+	devPort = 8082;
+
+var exec = require('child_process').exec;
+var cmdStr = 'PORT=' + serverPort + ' supervisor ./bin/www';
+exec(cmdStr);
+
+
+for (var i in config.entry) {
+	config.entry[i].unshift('webpack-dev-server/client?http://localhost:' + devPort, "webpack/hot/dev-server")
+}
+config.plugins.push(new webpack.HotModuleReplacementPlugin());
+
+
+var proxy = {
+	"*": "http://localhost:" + serverPort
+};
+//启动服务
+var app = new WebpackDevServer(webpack(config), {
+	publicPath: '/static/',
+	hot: true,
+	proxy: proxy
+});
+app.listen(devPort);
+```
+
+然后，只需要在项目目录下执行`node server`就可以进行开发了。
 
 这里还要说说如何直接处理后端模板的问题。一开始本菜也是对这个问题进行了苦苦的探索，觉得可能真的实现不了，一度要放弃，并打算采用先纯静态打包再改写成后端模板的方式（因为貌似还没有这样的loader可以很智能的处理模板include的问题以及在非html模板中自动引入css和js）。但是这样做真的很蛋疼啊有木有！明明是一件事为什么要拆成两件事去做呢？！
 

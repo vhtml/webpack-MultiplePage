@@ -5,7 +5,8 @@
   "author": "vhtml",
   "license": "ISC",
   "scripts": {
-    "dev": "PORT=54999 node ./bin/www"
+    "dev": "PORT=54999 node ./bin/www",
+    "build": "rm -rf public/* views/* && NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
     "art-template": "^3.0.3",
