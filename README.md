@@ -22,11 +22,11 @@
             + page
             + components
         + views				#HTML模板
-    - public				#webpack编译打包输出目录的静态文件，express工程的静态目录
+    - public				#webpack编译打包输出目录的静态文件，express工程的静态目录，可由webpack打包自动生成
         + styles                
         + scripts
         + imgs
-    + views					#webpack编译输出的模板静态文件，express工程的视图模板 
+    + views					#webpack编译输出的模板静态文件，express工程的视图模板，可由webpack打包自动生成
     + node_modules			#所使用的nodejs模块
     package.json			#项目配置
     webpack.config.js		#webpack配置
@@ -230,3 +230,15 @@ app.listen(devPort);
 到此，“大业”完成。
 
 假如你有更好的解决方案，欢迎一起分享。
+
+### 快速开始
+
+```bash
+git clone https://github.com/vhtml/webpack-MultiplePage.git  #克隆最新项目到本地
+cd webpack-MultiplePage  #切换到项目路径下
+npm install   #安装依赖
+webpack		  #打包编译
+npm run dev   #运行程序
+```
+
+在浏览器中打开http://localhost:54999/。
