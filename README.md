@@ -53,7 +53,9 @@ package.json里最终的声明依赖如下：
     "webpack-dev-server": "^1.14.1"
 }
 ```
-可以看出，比上篇多了一个glob依赖，它是一个根据模式匹配获取文件列表的node模块。有关glob的详细用法可以在这里看到——<https://github.com/isaacs/node-glob>。利用glob模块可以很方便的获取src/scripts/page路径下的所有js入口文件。同理，可以实现自动的进行与入口文件相对应的模板配置。最终的webpack配置如下：
+可以看出，比上篇多了一个glob依赖，它是一个根据模式匹配获取文件列表的node模块。有关glob的详细用法可以在这里看到——<https://github.com/isaacs/node-glob>。利用glob模块可以很方便的获取src/scripts/page路径下的所有js入口文件。同理，可以实现自动的进行与入口文件相对应的模板配置。
+
+最终的webpack配置如下（一些注释可能会让你少走许多坑）：
 
 ```javascript
 var path = require('path');
