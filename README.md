@@ -255,8 +255,8 @@ fs.watch('./src/views/', function() {
 ```bash
 git clone https://github.com/vhtml/webpack-MultiplePage.git  #克隆最新项目到本地
 cd webpack-MultiplePage  #切换到项目路径下
-npm install   #安装依赖
-node server 	#执行开发环境脚本
+npm install	#安装依赖
+node server #执行开发环境脚本，因为server.js中使用supervisor启动node程序，你可能需要全局安装一下supervisor
 ```
 
 在浏览器中打开http://localhost:8082/。
