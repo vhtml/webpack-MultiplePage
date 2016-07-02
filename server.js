@@ -15,16 +15,14 @@ if(os.platform().toLowerCase().indexOf('win32') > -1){
 	cmdStr = 'supervisor ./bin/www'
 }
 
-
 exec(cmdStr, function(err, stdout, stderr){
-		if(err){
-			console.error(err);
-		}
-		else{
-			console.log(stdout);
-		}
+	if(err){
+		console.error(err);
+	}
+	else{
+		console.log(stdout);
+	}
 });
-
 
 for (var i in config.entry) {
 	config.entry[i].unshift('webpack-dev-server/client?http://localhost:' + devPort, "webpack/hot/dev-server")
@@ -41,11 +39,18 @@ var app = new WebpackDevServer(webpack(config), {
 	hot: true,
 	proxy: proxy
 });
+
+execWebpack()
+
 app.listen(devPort, function() {
 	console.log('dev server on http://0.0.0.0:' + devPort+'\n');
 });
 
 fs.watch('./src/views/', function() {
+	execWebpack()
+});
+
+function execWebpack(){
 	exec('webpack --progress --hide-modules', function(err, stdout, stderr) {
 		if (err) {
 			console.error(stderr);
@@ -53,4 +58,4 @@ fs.watch('./src/views/', function() {
 			console.log(stdout);
 		}
 	});
-});
+}
