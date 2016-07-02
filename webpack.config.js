@@ -76,7 +76,7 @@ pages.forEach(function(pathname) {
 		// }
 	};
 	if (pathname in config.entry) {
-		conf.favicon = 'src/imgs/favicon.ico';
+		conf.favicon = path.resolve(__dirname, 'src/imgs/favicon.ico');
 		conf.inject = 'body';
 		conf.chunks = ['vendors', pathname];
 		conf.hash = true;

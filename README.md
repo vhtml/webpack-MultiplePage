@@ -53,7 +53,9 @@ package.json里最终的声明依赖如下：
     "webpack-dev-server": "^1.14.1"
 }
 ```
-可以看出，比上篇多了一个glob依赖，它是一个根据模式匹配获取文件列表的node模块。有关glob的详细用法可以在这里看到——<https://github.com/isaacs/node-glob>。利用glob模块可以很方便的获取src/scripts/page路径下的所有js入口文件。同理，可以实现自动的进行与入口文件相对应的模板配置。最终的webpack配置如下：
+可以看出，比上篇多了一个glob依赖，它是一个根据模式匹配获取文件列表的node模块。有关glob的详细用法可以在这里看到——<https://github.com/isaacs/node-glob>。利用glob模块可以很方便的获取src/scripts/page路径下的所有js入口文件。同理，可以实现自动的进行与入口文件相对应的模板配置。
+
+最终的webpack配置如下（一些注释可能会让你少走许多坑）：
 
 ```javascript
 var path = require('path');
@@ -68,14 +70,13 @@ const debug = process.env.NODE_ENV !== 'production';
 
 var entries = getEntry('src/scripts/page/**/*.js', 'src/scripts/page/');
 var chunks = Object.keys(entries);
-
 var config = {
 	entry: entries,
 	output: {
 		path: path.join(__dirname, 'public'),
 		publicPath: '/static/',
 		filename: 'scripts/[name].js',
-		chunkFilename: 'scripts/[id].chunk.js'
+		chunkFilename: 'scripts/[id].chunk.js?[chunkhash]'
 	},
 	module: {
 		loaders: [ //加载器
@@ -87,7 +88,7 @@ var config = {
 				loader: ExtractTextPlugin.extract('css!less')
 			}, {
 				test: /\.html$/,
-				loader: "html"
+				loader: "html?-minimize"	//避免压缩html,https://github.com/webpack/html-loader/issues/50
 			}, {
 				test: /\.(woff|woff2|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
 				loader: 'file-loader?name=fonts/[name].[ext]'
@@ -113,16 +114,7 @@ var config = {
 			},
 			except: ['$super', '$', 'exports', 'require'] //排除关键字
 		}),
-		//new webpack.HotModuleReplacementPlugin() //热加载
-	],
-	//devServer: {
-	//	publicPath:'http://localhost:8080/static/',
-	//	proxy: {
-	//		"*": "http://localhost:54999"
-	//	},
-	//	inline: true,
-	//	hot: true
-	//}
+	]
 };
 
 
@@ -132,12 +124,19 @@ pages.forEach(function(pathname) {
 		filename: '../views/' + pathname + '.html', //生成的html存放路径，相对于path
 		template: 'src/views/' + pathname + '.html', //html模板路径
 		inject: false,	//js插入的位置，true/'head'/'body'/false
-		minify: { //压缩HTML文件
-			removeComments: true, //移除HTML中的注释
-			collapseWhitespace: false //删除空白符与换行符
-		}
+		/*
+		* 压缩这块，调用了html-minify，会导致压缩时候的很多html语法检查问题，
+		* 如在html标签属性上使用{{...}}表达式，所以很多情况下并不需要在此配置压缩项，
+		* 另外，UglifyJsPlugin会在压缩代码的时候连同html一起压缩。
+		* 为避免压缩html，需要在html-loader上配置'html?-minimize'，见loaders中html-loader的配置。
+		 */
+		// minify: { //压缩HTML文件
+		// 	removeComments: true, //移除HTML中的注释
+		// 	collapseWhitespace: false //删除空白符与换行符
+		// }
 	};
 	if (pathname in config.entry) {
+		conf.favicon = 'src/imgs/favicon.ico';
 		conf.inject = 'body';
 		conf.chunks = ['vendors', pathname];
 		conf.hash = true;
@@ -256,8 +255,8 @@ fs.watch('./src/views/', function() {
 ```bash
 git clone https://github.com/vhtml/webpack-MultiplePage.git  #克隆最新项目到本地
 cd webpack-MultiplePage  #切换到项目路径下
-npm install   #安装依赖
-node server 	#执行开发环境脚本
+npm install	#安装依赖
+node server #执行开发环境脚本，因为server.js中使用supervisor启动node程序，你可能需要全局安装一下supervisor
 ```
 
 在浏览器中打开http://localhost:8082/。
