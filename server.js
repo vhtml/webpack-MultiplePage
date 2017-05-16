@@ -56,7 +56,11 @@ compiler.plugin('emit', function (compilation, cb) {
 // 当页面模板有改变时，强制刷新页面
 compiler.plugin('compilation', function (compilation) {
   compilation.plugin('html-webpack-plugin-after-emit', function (data, cb) {
-    console.log('xxxxxxxxxx-----------')
+    // todo 刷新浏览器
+    /**
+     * 实际项目中，应该使用webpack-dev-middleware和webpack-hot-middleware中间件，
+     * 结合node库express/koa等使用。
+     */
     cb()
   })
 })
