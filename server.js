@@ -37,12 +37,14 @@ var app = new WebpackDevServer(compiler, {
   proxy: proxy
 })
 
-rm('-rf', path.join(__dirname, 'views'))
+var viewPath = path.join(__dirname, 'views')
+rm('-rf', viewPath)
 // 在源码有更新时，更新模板
 compiler.plugin('emit', function (compilation, cb) {
   for (var filename in compilation.assets) {
     if (filename.endsWith('.html')) {
-      let filepath = path.resolve(__dirname, filename)
+      let filepath = path.resolve(viewPath, filename)
+      console.log(filepath)
       let dirname = path.dirname(filepath)
       if (!fs.existsSync(dirname)) {
         mkdir('-p', dirname)
