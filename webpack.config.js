@@ -13,7 +13,7 @@ var chunks = Object.keys(entries)
 var config = {
   entry: entries,
   output: {
-    path: path.join(__dirname),
+    path: path.join(__dirname, 'public'),
     publicPath: '/static/',
     filename: 'scripts/[name].js',
     chunkFilename: 'scripts/[id].chunk.js?[chunkhash]'
@@ -60,7 +60,7 @@ var config = {
 var pages = Object.keys(getEntry('src/views/**/*.html', 'src/views/'))
 pages.forEach(function (pathname) {
   var conf = {
-    filename: './views/' + pathname + '.html', // 生成的html存放路径，相对于path
+    filename: '../views/' + pathname + '.html', // 生成的html存放路径，相对于path
     template: 'src/views/' + pathname + '.html', // html模板路径
     inject: false // js插入的位置，true/'head'/'body'/false
     /*
