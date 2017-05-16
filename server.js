@@ -44,7 +44,6 @@ compiler.plugin('emit', function (compilation, cb) {
   for (var filename in compilation.assets) {
     if (filename.endsWith('.html')) {
       let filepath = path.resolve(viewPath, filename)
-      console.log(filepath)
       let dirname = path.dirname(filepath)
       if (!fs.existsSync(dirname)) {
         mkdir('-p', dirname)
