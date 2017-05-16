@@ -5,7 +5,7 @@
   "author": "vhtml",
   "license": "ISC",
   "scripts": {
-    "dev": "PORT=54999 node ./bin/www",
+    "dev": "node server",
     "build": "rm -rf public/* views/* && NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
@@ -19,7 +19,14 @@
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {
+    "cross-env": "^5.0.0",
     "css-loader": "^0.23.1",
+    "eslint": "^3.15.0",
+    "eslint-config-standard": "^6.2.1",
+    "eslint-loader": "^1.6.1",
+    "eslint-plugin-html": "^2.0.0",
+    "eslint-plugin-promise": "^3.4.1",
+    "eslint-plugin-standard": "^2.0.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.8.5",
     "glob": "^7.0.0",
@@ -28,6 +35,8 @@
     "jquery": "^1.12.0",
     "less": "^2.6.0",
     "less-loader": "^2.2.2",
+    "nodeman": "^1.1.2",
+    "shelljs": "^0.7.7",
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.13",
