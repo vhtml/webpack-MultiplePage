@@ -1,61 +1,66 @@
-var fs = require('fs');
-var os = require('os');
-var webpack = require('webpack');
-var WebpackDevServer = require('webpack-dev-server');
-var config = require('./webpack.config');
+var fs = require('fs')
+var path = require('path')
+var webpack = require('webpack')
+var WebpackDevServer = require('webpack-dev-server')
+var config = require('./webpack.config')
 
-var serverPort = 54999,
-	devPort = 8082;
+require('shelljs/global')
 
-var exec = require('child_process').exec;
-var cmdStr = 'PORT=' + serverPort + ' supervisor ./bin/www';
+var serverPort = 54999
+var devPort = 8082
 
-//请使用win系统的同学，自行更改执行脚本命令吧，前面指定端口号即可，抱歉抱歉，实在不熟
-if(os.platform().toLowerCase().indexOf('win32') > -1){	
-	cmdStr = 'supervisor ./bin/www'
-}
+var exec = require('child_process').exec
+var cmdStr = 'cross-env PORT=' + serverPort + ' supervisor ./bin/www'
 
-exec(cmdStr, function(err, stdout, stderr){
-	if(err){
-		console.error(err);
-	}
-	else{
-		console.log(stdout);
-	}
-});
+exec(cmdStr, function (err, stdout, stderr) {
+  if (err) {
+    console.error(err)
+  } else {
+    console.log(stdout)
+  }
+})
 
 for (var i in config.entry) {
-	config.entry[i].unshift('webpack-dev-server/client?http://localhost:' + devPort, "webpack/hot/dev-server")
+  config.entry[i].unshift('webpack-dev-server/client?http://localhost:' + devPort, 'webpack/hot/dev-server')
 }
-config.plugins.push(new webpack.HotModuleReplacementPlugin());
-
+config.plugins.push(new webpack.HotModuleReplacementPlugin())
 
 var proxy = {
-	"*": "http://localhost:" + serverPort
-};
-//启动服务
-var app = new WebpackDevServer(webpack(config), {
-	publicPath: '/static/',
-	hot: true,
-	proxy: proxy
-});
-
-execWebpack()
-
-app.listen(devPort, function() {
-	console.log('dev server on http://0.0.0.0:' + devPort+'\n');
-});
-
-fs.watch('./src/views/', function() {
-	execWebpack()
-});
-
-function execWebpack(){
-	exec('webpack --progress --hide-modules', function(err, stdout, stderr) {
-		if (err) {
-			console.error(stderr);
-		} else {
-			console.log(stdout);
-		}
-	});
+  '*': 'http://localhost:' + serverPort
 }
+
+var compiler = webpack(config)
+// 启动服务
+var app = new WebpackDevServer(compiler, {
+  publicPath: '/static/',
+  hot: true,
+  proxy: proxy
+})
+
+rm('-rf', path.join(__dirname, 'views'))
+// 在源码有更新时，更新模板
+compiler.plugin('emit', function (compilation, cb) {
+  for (var filename in compilation.assets) {
+    if (filename.endsWith('.html')) {
+      let filepath = path.resolve(__dirname, filename)
+      let dirname = path.dirname(filepath)
+      if (!fs.existsSync(dirname)) {
+        mkdir('-p', dirname)
+      }
+      fs.writeFile(filepath, compilation.assets[filename].source())
+    }
+  }
+  cb()
+})
+
+// 当页面模板有改变时，强制刷新页面
+compiler.plugin('compilation', function (compilation) {
+  compilation.plugin('html-webpack-plugin-after-emit', function (data, cb) {
+    console.log('xxxxxxxxxx-----------')
+    cb()
+  })
+})
+
+app.listen(devPort, function () {
+  console.log('dev server on http://0.0.0.0:' + devPort + '\n')
+})
